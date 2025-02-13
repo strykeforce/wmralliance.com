@@ -1,26 +1,23 @@
+{ flake, ... }:
 {
   config,
   lib,
+  pkgs,
   ...
 }:
+let
+  inherit (pkgs) system;
+in
 {
-  options.wmra.website = {
-    package = lib.mkOption {
-      type = lib.types.package;
-    };
-  };
+  services.nginx = {
+    enable = true;
+    virtualHosts."www.wmralliance.com" = {
+      serverAliases = [
+        "wmralliance.com"
+        "wmralliance.strykeforce.org"
 
-  config = {
-    services.nginx = {
-      enable = true;
-      virtualHosts."www.wmralliance.com" = {
-        serverAliases = [
-          "wmralliance.com"
-          "wmralliance.strykeforce.org"
-
-        ];
-        locations."/".alias = "${config.wmra.website.package}/";
-      };
+      ];
+      locations."/".alias = "${flake.packages.${system}.wmralliance}/";
     };
   };
 }
