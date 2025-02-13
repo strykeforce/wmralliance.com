@@ -1,13 +1,26 @@
-{ perSystem, ... }:
 {
-  services.nginx = {
-    enable = true;
-    virtualHosts."wmra.strykeforce.org" = {
-      serverAliases = [
-        # "wmralliance.com"
-        "pallas.lan.j3ff.io"
-      ];
-      location."/".alias = "${perSystem.self.wmralliance}";
+  config,
+  lib,
+  ...
+}:
+{
+  options.wmra.website = {
+    package = lib.mkOption {
+      type = lib.types.package;
+    };
+  };
+
+  config = {
+    services.nginx = {
+      enable = true;
+      virtualHosts."www.wmralliance.com" = {
+        serverAliases = [
+          "wmralliance.com"
+          "wmralliance.strykeforce.org"
+
+        ];
+        locations."/".alias = "${config.wmra.website.package}/";
+      };
     };
   };
 }
