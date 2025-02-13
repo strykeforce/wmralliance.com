@@ -1,0 +1,2 @@
+serve:
+    live-server src
